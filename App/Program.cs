@@ -62,12 +62,12 @@ var builder = WebApplication.CreateBuilder(args);
 //     client.DefaultRequestHeaders.Add("Accept", "application/json");
 // });
 
-builder.Services.AddAuthentication()
-    .AddOAuth("sso", o =>
-    {
-        o.ClientId = "9b0e5e01-1474-445e-8496-627d08c61656";
-        o.ClientSecret = "9Tq3EHiuIakfAClpU3Wgm6X0EvVTlzh0ZXJNIOPS";
-    });
+// builder.Services.AddAuthentication()
+//     .AddOAuth("sso", o =>
+//     {
+//         o.ClientId = "9b0e5e01-1474-445e-8496-627d08c61656";
+//         o.ClientSecret = "9Tq3EHiuIakfAClpU3Wgm6X0EvVTlzh0ZXJNIOPS";
+//     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
