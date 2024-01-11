@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  myapp:
+    container_name: dnauth
+    build: .
+      # context: .
+      # dockerfile: Dockerfile
+    ports:
+      - "7000:5108"
+    networks:
+    - local
+
+networks:
+  local:
+      name: local-dev
+      external: true
+#     volumes:
+#       - dd:/app
+#     #restart: always
+
+# volumes:
+#   dd:
+#     external: false
