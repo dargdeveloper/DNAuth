@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/DotNet.Docker.csproj": {}
+    "\\\\wsl.localhost\\Ubuntu-20.04\\home\\karla\\practicas\\DNAuth\\App\\DotNet.Docker.csproj": {}
   },
   "projects": {
-    "/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/DotNet.Docker.csproj": {
+    "\\\\wsl.localhost\\Ubuntu-20.04\\home\\karla\\practicas\\DNAuth\\App\\DotNet.Docker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/DotNet.Docker.csproj",
+        "projectUniqueName": "\\\\wsl.localhost\\Ubuntu-20.04\\home\\karla\\practicas\\DNAuth\\App\\DotNet.Docker.csproj",
         "projectName": "DotNet.Docker",
-        "projectPath": "/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/DotNet.Docker.csproj",
-        "packagesPath": "/home/ricardo/.nuget/packages/",
-        "outputPath": "/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/obj/",
+        "projectPath": "\\\\wsl.localhost\\Ubuntu-20.04\\home\\karla\\practicas\\DNAuth\\App\\DotNet.Docker.csproj",
+        "packagesPath": "C:\\Users\\ENEE\\.nuget\\packages\\",
+        "outputPath": "\\\\wsl.localhost\\Ubuntu-20.04\\home\\karla\\practicas\\DNAuth\\App\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/ricardo/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ENEE\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -62,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

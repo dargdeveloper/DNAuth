@@ -73,10 +73,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Registro del servicio HTTP
 builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddScoped<IHelper, HttpService>();
 // Agrega esta línea para registrar HttpClient
 builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Logging.AddConsole();
+
+builder.Services.AddHttpClient("sso", client =>
+{
+    client.BaseAddress = new Uri("http://172.18.0.5/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 var app = builder.Build();
 
@@ -169,6 +176,33 @@ app.MapPost("/enviar-formulario", async (TokenModel data, IHttpService httpServi
     }
 });
 
+app.MapPost("functions/create", async (FunctionModel functionModel, IHelper helper) =>
+{
+    try
+    {
+        var resultado = await helper.CreateFunction(functionModel);
+        var myObject = JsonSerializer.Deserialize<FunctionResponse>(resultado);
+        return Results.Ok(myObject);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapDelete("functions/{functionId}/delete", async (string functionId, IHelper helper) =>
+{
+    try
+    {
+        var resultado = await helper.DeleteFunction(functionId);
+        return Results.Ok(resultado);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
 app.Run();
 
 internal record Beer(string name, string brand);
@@ -197,3 +231,4 @@ public class Source
     public string id { get; set; }
     public string name { get; set; }
 }
+
