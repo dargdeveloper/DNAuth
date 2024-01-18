@@ -30,3 +30,16 @@
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/obj/Debug/net8.0/DotNet.Docker.csproj.CopyComplete
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/obj/Debug/net8.0/DotNet.Docker.sourcelink.json
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Pipelines.Sockets.Unofficial.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/StackExchange.Redis.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/dotenv.net.dll

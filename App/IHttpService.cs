@@ -4,4 +4,5 @@ public interface IHttpService
 {
     Task<string> GetAsync(string url);
     Task<string> EnviarFormularioAsync(TokenModel data);
+    Task<string> GetList(string bearerToken);
 }
