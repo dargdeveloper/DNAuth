@@ -1,3 +1,5 @@
+using DotNet.Docker.Models;
+
 namespace DotNet.Docker.HttpServices;
 
 public interface IHttpService

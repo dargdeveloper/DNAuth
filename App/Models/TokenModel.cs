@@ -1,4 +1,4 @@
-namespace DotNet.Docker;
+namespace DotNet.Docker.Models;
 
 public class TokenModel
 {

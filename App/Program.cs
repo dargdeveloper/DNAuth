@@ -4,7 +4,7 @@ using DotNet.Docker.Auth;
 using DotNet.Docker.Helpers;
 using DotNet.Docker.HttpServices;
 using DotNet.Docker.Redis;
-using DotNet.Docker.SSO;
+using DotNet.Docker.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;

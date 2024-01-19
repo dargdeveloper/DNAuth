@@ -1,5 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
-using DotNet.Docker.SSO;
+using DotNet.Docker.Models;
 using StackExchange.Redis;
 
 namespace DotNet.Docker.Redis;

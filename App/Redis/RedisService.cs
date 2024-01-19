@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using DotNet.Docker.Helpers;
-using DotNet.Docker.SSO;
+using DotNet.Docker.Models;
 using StackExchange.Redis;
 using System.Text.Json;
 

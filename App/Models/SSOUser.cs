@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DotNet.Docker.SSO;
+namespace DotNet.Docker.Models;
 
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-using System.Net.Http.Headers;
+using DotNet.Docker.Models;
 
 namespace DotNet.Docker.HttpServices;
 
