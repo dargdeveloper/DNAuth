@@ -43,3 +43,5 @@
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/Pipelines.Sockets.Unofficial.dll
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/StackExchange.Redis.dll
 /home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/dotenv.net.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/NetTopologySuite.dll
+/home/ricardo/Desktop/ricardo/Lo mio/practicas/DNAuth/App/bin/Debug/net8.0/NRedisStack.dll

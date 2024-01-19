@@ -1,131 +1,72 @@
-// using Microsoft.OpenApi.Models;
-
-// var builder = WebApplication.CreateBuilder(args);
-
-// // Agrega servicios a la aplicación
-// builder.Services.AddControllers();
-// builder.Services.AddSwaggerGen(c =>
-// {
-//     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mi API", Version = "v1" });
-// });
-
-// var app = builder.Build();
-
-// // Configura el HTTP request pipeline.
-// if (!app.Environment.IsDevelopment())
-// {
-//     app.UseExceptionHandler("/Error");
-//     app.UseHsts();
-// }
-
-// app.UseHttpsRedirection();
-// app.UseStaticFiles();
-// app.UseRouting();
-
-// app.UseAuthorization();
-
-// app.MapControllers();
-
-// app.UseSwagger();
-// app.UseSwaggerUI(/*c =>
-// {
-//     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API V1");
-// }*/);
-
-// var beers = new Beer[]
-// {
-// new Beer("x","y"),
-// new Beer("z","a"),
-// new Beer("b","c"),
-// };
-
-// app.MapGet("/beers/{quantity}", ()=>{
-//     return beers;
-// });
-
-// app.MapGet("/", () => "Hello World!");
-
-
-// app.Run();
-
-
-// internal record Beer(string name, string brand);
-
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using DotNet.Docker;
+using DotNet.Docker.Auth;
 using DotNet.Docker.CustomAuth;
 using DotNet.Docker.Redis;
-using Microsoft.AspNetCore.Authentication;
+using DotNet.Docker.SSO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddHttpClient("FormClient", client =>
-// {
-//     client.BaseAddress = new Uri("http://tuapi.com/");
-//     client.DefaultRequestHeaders.Add("Accept", "application/json");
-// });
-
-// builder.Services.AddAuthentication()
-//     .AddOAuth("sso", o =>
-//     {
-//         o.ClientId = "9b0e5e01-1474-445e-8496-627d08c61656";
-//         o.ClientSecret = "9Tq3EHiuIakfAClpU3Wgm6X0EvVTlzh0ZXJNIOPS";
-//     });
-
-
-// builder.Services.Add
-
 // En tu configuración de servicios
-var publicKey = File.ReadAllText("./clave.pem");
-var rsaSecurityKey = Helper.GetPublicKey(publicKey);
-
-// Configura la autenticación OAuth 2.0
-// builder.Services.AddAuthentication(options =>
-//     {
-//         // options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//     })
-//     .AddJwtBearer(options =>
-//     {
-//         options.Authority = "https://dev-sso.proyectos-enee.xyz"; // URL de tu servidor OAuth Laravel
-//         options.Audience = "9b19c38f-9420-474c-b4f9-f223a1e1c4cf";
-//         options.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             ValidateIssuer = false,
-//             ValidateAudience = false,
-//             ValidateLifetime = true,
-//             ValidateIssuerSigningKey = true,
-//             IssuerSigningKey = rsaSecurityKey /*new SymmetricSecurityKey(Encoding.UTF8.GetBytes("-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAn7EhGfTC7050eIPV9tIw\nSLqKVp47PosSfN1fA+W7bUUXHu4tgwawIOG0OTiN6NF9G8Ul/0Ah2BPMLiz6hWQO\nz2g4yIfKmRhrF2X/mCkYHFvgA45czAT5dy3WzBUXaLiC/RAbXkYVkUbNOCh68Qg1\neIcNWxqxTQ2/ckZah6+r3D96wLGtXAnFHdLDGntWNJgTz3jygtiquBi/tI+imeDx\n1nBDkbzUwZXFyDnysbAgMh1AlQ92vxaDXFCPhzTT9R56dBKsuqshC0/H4mzed4Fh\nCKbt7xpIJIM/D9a+h27GhyikVNAHR/CQjT4k3Jd7ceFXfNPiYZ3gBYmgrIskiS+x\nqCZfJattTUbhauKLe/eNqH+BMxGVJ/wG63dC1al2NuVWVNG08mFr4dqPwf3jPw66\nZEN5LbQ30eU1HkjDnRlPUAXxcqcfG/++jrEs2uz/0WgyZHSR90pIprN0bOD/ucl4\nSFGmoQ9Kjhrf7tslUUCfJlE4XsDhEGVnCvjQlzIqlOJqqsI/8hywSJK62GqHm1vI\nfmo17Kcg9RUyQQAeKLZLc5/Cwt9ZatXJBg7TnxAB1x4qzSRAXKscZgZ/AOl+mN5u\nuThnDh/S3rnIKO+6+hAwPkWvaGPSbP6kzT/60iaYyqx/4TBwVd3wpqxbc/9Q3O45\n8mP/KH0lIT3K45n1HwlGx0UCAwEAAQ==\n-----END PUBLIC KEY-----"))*/,
-//             
-//             
-//             
-//             ValidAudience = options.Audience,
-//             // ValidIssuer = options.Authority,
-//             
-//         };
-//         options.RequireHttpsMetadata = false;
-//         options.Events = new JwtBearerEvents()
-//         {
-//             OnAuthenticationFailed = async (c) =>
-//             {
-//                 
-//                 var x = c.Exception.Message;
-//                 var headerDictionary = c.HttpContext.Request.Headers;
-//             }
-//         };
-//     });
+// var publicKey = File.ReadAllText("./clave.pem");
+// var rsaSecurityKey = Helper.GetPublicKey(publicKey);
 
 //Add All Depended Services Here 
-builder.Services.AddTransient<CustomJwtBearerHandler>();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddScheme<JwtBearerOptions, CustomJwtBearerHandler>(JwtBearerDefaults.AuthenticationScheme, options => { });
+// builder.Services.AddTransient<CustomJwtBearerHandler>();
+// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//     .AddScheme<JwtBearerOptions, CustomJwtBearerHandler>(JwtBearerDefaults.AuthenticationScheme, options => { });
+
+builder.Services
+    // .AddCustomAuthorization("https://dev-sso.proyectos-enee.xyz")
+    .AddCustomAuthorization("http://172.28.0.5:4000")
+    /*.AddAuthorization(option =>
+    {
+        option.AddPolicy("custom", AuthorizationExtensions.AddCustomAuthorization("https://dev-sso.proyectos-enee.xyz"));
+    })*/
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        // options.Authority = "https://dev-sso.proyectos-enee.xyz";
+        // options.Audience = "9b1b7441-52aa-4701-b4e2-99971bb1c06b";
+        
+        options.Authority = "http://172.28.0.5:8082";
+        // options.Audience = "9ae255e8-6264-4a58-89a2-eca665f107a5";
+        options.Audience = "99bffb77-8e2a-4728-8a6f-72cee9e2b8f5";
+        
+        var publicKey = File.ReadAllText("./clave-local.pem");
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = "preferred_username",
+            ValidateIssuer = false,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            // ValidIssuer ="https://dev-sso.proyectos-enee.xyz",
+            ValidIssuer = "http://172.28.0.5:8082",
+            ValidAudience = options.Audience, // El mismo value que especificaste en el cliente de Angular
+            IssuerSigningKey = Helper.GetPublicKey(publicKey)
+
+        };
+        options.TokenValidationParameters = tokenValidationParameters;
+        options.RequireHttpsMetadata = false;
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = async context =>
+            {
+                var x = context.Result;
+            }
+        };
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -133,7 +74,7 @@ builder.Services.AddSwaggerGen(option =>
     // option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     // {
     //     In = ParameterLocation.Header,
-    //     Name = "Authorization",
+    //     name = "Authorization",
     //     Type = SecuritySchemeType.ApiKey
     // });
     // option.OperationFilter<SecurityRequirementsOperationFilter>();
@@ -209,31 +150,74 @@ app.MapGet("/get-list",  [Authorize] async (IHttpService httpService, HttpContex
     }
 });
 
+var summaries = new[]
+{
+    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+};
+
+app.MapPost("/set-value", (HttpContext context, IRedisService redis) =>
+{
+    redis.SetStringAsync("Prueba", "Llego");
+});
+
+app.MapGet("/get-value", async (IHttpService httpService, HttpContext context, IRedisService redis) =>
+{
+    // SSOUser objeto = JsonSerializer.Deserialize<SSOUser>(value.ToString());
+    
+    if (!context.Request.Headers.TryGetValue("Authorization", out var authorizationHeaderValues))
+    {
+        return Results.Problem("Authorization header not found.");
+    }
+
+    var authorizationHeader = authorizationHeaderValues.FirstOrDefault();
+    var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+    
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var jwtToken = tokenHandler.ReadJwtToken(token);
+
+    var name = "sso_cache_:" + jwtToken.Id;
+    var value = await redis.GetStringAsync(name);
+    if (!value.IsNullOrEmpty)
+    {
+        string pattern = @"^[a-zA-Z0-9]+:\d+:";
+
+        // Dividir la cadena, pero solo en la primera coincidencia
+        string[] partes = Regex.Split(value.ToString(), pattern);
+        // string jsonString = "@" + partes[1];
+
+        string nuevo = Helper.EscapeJsonString(partes[1].Replace(";",""));
+        // using JsonDocument doc = JsonDocument.Parse(nuevo);
+
+        // var objeto = JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true });
+        
+        SSOUser objeto = JsonSerializer.Deserialize<SSOUser>(nuevo);
+        
+        
+        return Results.Ok(objeto); // Aquí conviertes el value a string
+    }
+    
+    return Results.NotFound();
+});
+
+app.MapGet("/weatherforecast", [Permiso("cualquier cosa")](HttpContext context) =>
+    {
+        var claimsPrincipal = context.User;
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecast
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                ))
+            .ToArray();
+        return forecast;
+    })
+    .WithName("GetWeatherForecast")
+    /*.WithOpenApi()*/;
+
 app.Run();
 
-internal record Beer(string name, string brand);
-
-public class Article
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
-    public Source source { get; set; }
-    public string author { get; set; }
-    public string title { get; set; }
-    public string description { get; set; }
-    public string url { get; set; }
-    public string urlToImage { get; set; }
-    public DateTime publishedAt { get; set; }
-    public string content { get; set; }
-}
-
-public class Root
-{
-    public string status { get; set; }
-    public int totalResults { get; set; }
-    public List<Article> articles { get; set; }
-}
-
-public class Source
-{
-    public string id { get; set; }
-    public string name { get; set; }
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }

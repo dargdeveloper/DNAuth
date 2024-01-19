@@ -1,1 +1,3 @@
 App/.env
+App/.clave.pem
+App/clave-local.pem

@@ -5,22 +5,22 @@ namespace DotNet.Docker.Redis;
 public class RedisService:IRedisService
 {
     private readonly IConnectionMultiplexer _connectionMultiplexer;
+    private readonly IDatabase db;
 
     public RedisService(IConnectionMultiplexer connectionMultiplexer)
     {
         _connectionMultiplexer = connectionMultiplexer;
+        db = _connectionMultiplexer.GetDatabase();
     }
 
-    public async Task<string> GetStringAsync(string key)
+    public async Task<RedisValue> GetStringAsync(string key)
     {
-        var db = _connectionMultiplexer.GetDatabase();
-        return await db.StringGetAsync(key);
+        var value = await db.StringGetAsync(key);
+        return value;
     }
 
     public async Task SetStringAsync(string key, string value)
     {
-        var db = _connectionMultiplexer.GetDatabase();
         await db.StringSetAsync(key, value);
     }
-
 }
