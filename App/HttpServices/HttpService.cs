@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 
-namespace DotNet.Docker;
+namespace DotNet.Docker.HttpServices;
 
 public class HttpService: IHttpService
 {

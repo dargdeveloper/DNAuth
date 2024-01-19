@@ -1,4 +1,4 @@
-namespace DotNet.Docker;
+namespace DotNet.Docker.HttpServices;
 
 public interface IHttpService
 {

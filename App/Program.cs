@@ -2,6 +2,7 @@ using System.Text.Json;
 using DotNet.Docker;
 using DotNet.Docker.Auth;
 using DotNet.Docker.Helpers;
+using DotNet.Docker.HttpServices;
 using DotNet.Docker.Redis;
 using DotNet.Docker.SSO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
