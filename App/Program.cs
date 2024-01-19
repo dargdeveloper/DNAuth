@@ -1,26 +1,14 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using DotNet.Docker;
 using DotNet.Docker.Auth;
-using DotNet.Docker.CustomAuth;
+using DotNet.Docker.Helpers;
 using DotNet.Docker.Redis;
 using DotNet.Docker.SSO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// En tu configuración de servicios
-// var publicKey = File.ReadAllText("./clave.pem");
-// var rsaSecurityKey = Helper.GetPublicKey(publicKey);
-
-//Add All Depended Services Here 
-// builder.Services.AddTransient<CustomJwtBearerHandler>();
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddScheme<JwtBearerOptions, CustomJwtBearerHandler>(JwtBearerDefaults.AuthenticationScheme, options => { });
 
 builder.Services
     // .AddCustomAuthorization("https://dev-sso.proyectos-enee.xyz")
@@ -55,8 +43,8 @@ builder.Services
             ValidIssuer = "http://172.28.0.5:8082",
             ValidAudience = options.Audience, // El mismo value que especificaste en el cliente de Angular
             IssuerSigningKey = Helper.GetPublicKey(publicKey)
-
         };
+        
         options.TokenValidationParameters = tokenValidationParameters;
         options.RequireHttpsMetadata = false;
         options.Events = new JwtBearerEvents
@@ -69,22 +57,19 @@ builder.Services
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option =>
-{
-    // option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    // {
-    //     In = ParameterLocation.Header,
-    //     name = "Authorization",
-    //     Type = SecuritySchemeType.ApiKey
-    // });
-    // option.OperationFilter<SecurityRequirementsOperationFilter>();
-});
-// Registro del servicio HTTP
+builder.Services.AddSwaggerGen();
+
+// Registro de servicios
 builder.Services.AddScoped<IHttpService, HttpService>();
+builder.Services.AddScoped<IRedisService, RedisService>();
+builder.Services.AddScoped<IHelper, Helper>();
+
 // Agrega esta línea para registrar HttpClient
 builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Logging.AddConsole();
+
+builder.Services.AddHttpContextAccessor();
 
 // Agregar servicios de autorización
 builder.Services.AddAuthorization();
@@ -114,9 +99,8 @@ app.MapPost("/token",async (TokenModel data, IHttpService httpService, HttpConte
 {
     try
     {
-        var x = context.User.Claims.ToList();
         var resultado = await httpService.EnviarFormularioAsync(data);
-        // return Results.Ok(resultado);
+        
         var myObject = JsonSerializer.Deserialize<TokenResponse>(resultado);
         return Results.Ok(myObject);
     }
@@ -126,72 +110,15 @@ app.MapPost("/token",async (TokenModel data, IHttpService httpService, HttpConte
     }
 });
 
-app.MapGet("/get-list",  [Authorize] async (IHttpService httpService, HttpContext context) =>
+app.MapGet("/get-value", async (IRedisService redis, IHelper helper) =>
 {
-    try
-    {
-        var y = multiplexer.GetDatabase();
-        var x = context.User.Claims.ToList();
-        // Get the token from the Authorization header
-        if (!context.Request.Headers.TryGetValue("Authorization", out var authorizationHeaderValues))
-        {
-            return Results.Problem("Authorization header not found.");
-        }
-
-        var authorizationHeader = authorizationHeaderValues.FirstOrDefault();
-        var resultado = await httpService.GetList( authorizationHeader.Substring("Bearer ".Length).Trim());
-        // return Results.Ok(resultado);
-        var myObject = JsonSerializer.Deserialize<TokenResponse>(resultado);
-        return Results.Ok(myObject);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
-});
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapPost("/set-value", (HttpContext context, IRedisService redis) =>
-{
-    redis.SetStringAsync("Prueba", "Llego");
-});
-
-app.MapGet("/get-value", async (IHttpService httpService, HttpContext context, IRedisService redis) =>
-{
-    // SSOUser objeto = JsonSerializer.Deserialize<SSOUser>(value.ToString());
-    
-    if (!context.Request.Headers.TryGetValue("Authorization", out var authorizationHeaderValues))
-    {
-        return Results.Problem("Authorization header not found.");
-    }
-
-    var authorizationHeader = authorizationHeaderValues.FirstOrDefault();
-    var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-    
-    var tokenHandler = new JwtSecurityTokenHandler();
-    var jwtToken = tokenHandler.ReadJwtToken(token);
+    var jwtToken = helper.ReadJwtToken();
 
     var name = "sso_cache_:" + jwtToken.Id;
     var value = await redis.GetStringAsync(name);
     if (!value.IsNullOrEmpty)
     {
-        string pattern = @"^[a-zA-Z0-9]+:\d+:";
-
-        // Dividir la cadena, pero solo en la primera coincidencia
-        string[] partes = Regex.Split(value.ToString(), pattern);
-        // string jsonString = "@" + partes[1];
-
-        string nuevo = Helper.EscapeJsonString(partes[1].Replace(";",""));
-        // using JsonDocument doc = JsonDocument.Parse(nuevo);
-
-        // var objeto = JsonSerializer.Serialize(doc, new JsonSerializerOptions { WriteIndented = true });
-        
-        SSOUser objeto = JsonSerializer.Deserialize<SSOUser>(nuevo);
-        
+        SSOUser objeto = redis.GetUser(value.ToString());
         
         return Results.Ok(objeto); // Aquí conviertes el value a string
     }
@@ -199,25 +126,4 @@ app.MapGet("/get-value", async (IHttpService httpService, HttpContext context, I
     return Results.NotFound();
 });
 
-app.MapGet("/weatherforecast", [Permiso("cualquier cosa")](HttpContext context) =>
-    {
-        var claimsPrincipal = context.User;
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    /*.WithOpenApi()*/;
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
